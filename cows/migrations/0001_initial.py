@@ -13,82 +13,68 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Cow',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
-                ('crotal_number', models.CharField(db_index=True, max_length=50)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('crotal_number', models.CharField(max_length=50, db_index=True)),
                 ('name', models.CharField(null=True, blank=True, max_length=200)),
-                ('sex', models.CharField(max_length=1, choices=[('M', 'Macho'), ('H', 'Hembra')])),
+                ('sex', models.CharField(choices=[('M', 'Macho'), ('H', 'Hembra')], max_length=1)),
                 ('raze', models.CharField(max_length=50)),
                 ('birth_date', models.DateField()),
                 ('explotation_code', models.CharField(max_length=50)),
                 ('date_register_as_mother_or_father', models.DateField(null=True, blank=True)),
                 ('date_of_send_to_feeding', models.DateField(null=True, blank=True)),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Earnings',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('date', models.DateField()),
                 ('type', models.CharField(max_length=200)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=20)),
+                ('price', models.DecimalField(max_digits=20, decimal_places=2)),
                 ('quantity', models.IntegerField()),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Expenses',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('date', models.DateField()),
                 ('type', models.CharField(max_length=200)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=20)),
+                ('price', models.DecimalField(max_digits=20, decimal_places=2)),
                 ('quantity', models.IntegerField()),
             ],
-            options={
-            },
-            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='CowDrop',
+            fields=[
+                ('cow', models.OneToOneField(serialize=False, primary_key=True, to='cows.Cow')),
+                ('date', models.DateField()),
+            ],
         ),
         migrations.CreateModel(
             name='InExplotationDeath',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
-                ('date', models.DateField()),
+                ('cowdrop_ptr', models.OneToOneField(serialize=False, auto_created=True, parent_link=True, primary_key=True, to='cows.CowDrop')),
                 ('reason', models.TextField()),
-                ('cow', models.ForeignKey(to='cows.Cow')),
             ],
-            options={
-            },
-            bases=(models.Model,),
+            bases=('cows.cowdrop',),
         ),
         migrations.CreateModel(
             name='Sell',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
-                ('date', models.DateField()),
+                ('cowdrop_ptr', models.OneToOneField(serialize=False, auto_created=True, parent_link=True, primary_key=True, to='cows.CowDrop')),
                 ('explotation_code', models.CharField(max_length=50)),
-                ('sell_price', models.DecimalField(decimal_places=2, max_digits=20)),
-                ('cow', models.ForeignKey(to='cows.Cow')),
+                ('sell_price', models.DecimalField(max_digits=20, decimal_places=2)),
             ],
-            options={
-            },
-            bases=(models.Model,),
+            bases=('cows.cowdrop',),
         ),
         migrations.CreateModel(
             name='SentToSlaughterhouse',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
-                ('date', models.DateField()),
-                ('weight', models.DecimalField(decimal_places=3, max_digits=20)),
-                ('sell_price', models.DecimalField(decimal_places=2, max_digits=20)),
-                ('cow', models.ForeignKey(to='cows.Cow')),
+                ('cowdrop_ptr', models.OneToOneField(serialize=False, auto_created=True, parent_link=True, primary_key=True, to='cows.CowDrop')),
+                ('weight', models.DecimalField(max_digits=20, decimal_places=3)),
+                ('sell_price', models.DecimalField(max_digits=20, decimal_places=2)),
             ],
-            options={
-            },
-            bases=(models.Model,),
+            bases=('cows.cowdrop',),
         ),
     ]

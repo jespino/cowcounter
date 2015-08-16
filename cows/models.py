@@ -28,22 +28,21 @@ class Cow(models.Model):
         return "{} ({})".format(self.crotal_number, self.name)
 
 
-class Sell(models.Model):
-    cow = models.ForeignKey(Cow)
+class CowDrop(models.Model):
+    cow = models.OneToOneField(Cow, primary_key=True)
     date = models.DateField()
+
+
+class Sell(CowDrop):
     explotation_code = models.CharField(max_length=50)
     sell_price = models.DecimalField(max_digits=20, decimal_places=2)
 
 
-class InExplotationDeath(models.Model):
-    cow = models.ForeignKey(Cow)
-    date = models.DateField()
+class InExplotationDeath(CowDrop):
     reason = models.TextField()
 
 
-class SentToSlaughterhouse(models.Model):
-    cow = models.ForeignKey(Cow)
-    date = models.DateField()
+class SentToSlaughterhouse(CowDrop):
     weight = models.DecimalField(max_digits=20, decimal_places=3)
     sell_price = models.DecimalField(max_digits=20, decimal_places=2)
 
